@@ -7,6 +7,7 @@ extern int test_rbtree();
 extern void test_hashtable();
 extern int test_bitmap();
 extern void test_list();
+extern int test_kfifo();
 
 int main()
 {
@@ -14,5 +15,6 @@ int main()
     test_rbtree();
     test_hashtable();
     test_bitmap();
+    test_kfifo();
 	return 0;
 }

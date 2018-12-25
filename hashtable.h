@@ -11,7 +11,6 @@
 #include <unitypes.h>
 #include <math.h>
 
-#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 
 #define DEFINE_HASHTABLE(name, bits)						\
 	struct hlist_head name[1 << (bits)] =					\
@@ -27,36 +26,7 @@
 #define HASH_SIZE(name) (ARRAY_SIZE(name))
 #define HASH_BITS(name) log2(HASH_SIZE(name))
 
-static inline uint64_t hash_64(uint64_t val, unsigned int bits)  
-{  
-    uint64_t hash = val;  
-  
-    /*  Sigh, gcc can't optimise this alone like it does for 32 bits. */  
-    uint64_t n = hash;  
-    n <<= 18;  
-    hash -= n;  
-    n <<= 33;  
-    hash -= n;  
-    n <<= 3;  
-    hash += n;  
-    n <<= 3;  
-    hash -= n;  
-    n <<= 4;  
-    hash += n;  
-    n <<= 2;  
-    hash += n;  
-    /* High bits are more random, so use them. */  
-    return hash >> (64 - bits);  
-}  
-/* Use hash_32 when possible to allow for fast 32bit hashing in 64bit kernels. */
-static inline uint32_t hash_32(uint32_t val, unsigned int bits)  
-{  
-    /* On some cpus multiply is faster, on others gcc will do shifts */  
-    uint32_t hash = val * 0x9e370001UL;  
-    /* High bits are more random, so use them. */  
-    return hash >> (32 - bits);  
-}  
-  
+
 #define hash_min(val, bits)							\
 	(sizeof(val) <= 4 ? hash_32(val, bits) : hash_64(val, bits))
 
