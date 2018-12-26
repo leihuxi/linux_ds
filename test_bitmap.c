@@ -9,7 +9,7 @@ int test_bitmap()
 	int i;
 
 	printf("init %d bit, %d long int\n", BIT_CNT, arr_size);
-    my_bitmap =  bitmap_alloc(arr_size);
+	my_bitmap = bitmap_alloc(arr_size);
 
 	for (i = 0; i < arr_size; i++) {
 		printf("bitmap[%d] = %lx\n", i, my_bitmap[i]);
@@ -38,8 +38,8 @@ int test_bitmap()
 		printf("test bit is true\n");
 	else
 		printf("test bit is false\n");
-    i = bitmap_find_next_zero_area(my_bitmap, BIT_CNT, 0, 1, 0);
-    printf("find zero zrea:%d\n", i);
+	i = bitmap_find_next_zero_area(my_bitmap, BIT_CNT, 0, 1, 0);
+	printf("find zero zrea:%d\n", i);
 	bitmap_free(my_bitmap);
 	return 0;
 }

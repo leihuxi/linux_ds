@@ -32,11 +32,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdio.h>
-#define container_of(ptr, type, member)                                        \
-	({                                                                     \
-		const typeof(((type *)0)->member) *__mptr = (ptr);             \
-		(type *)((char *)__mptr - offsetof(type, member));             \
-	})
+#include "common.h"
 
 struct rb_node {
 	unsigned long __rb_parent_color;
@@ -146,14 +142,10 @@ static inline void rb_link_node(struct rb_node *node, struct rb_node *parent,
  * rbtree it is iterating over. This includes calling rb_erase() on @pos, as
  * rb_erase() may rebalance the tree, causing us to miss some nodes.
  */
-#define rbtree_postorder_for_each_entry_safe(pos, n, root, field)              \
-	for (pos = rb_entry_safe(rb_first_postorder(root), typeof(*pos),       \
-				 field);                                       \
-	     pos && ({                                                         \
-		     n = rb_entry_safe(rb_next_postorder(&pos->field),         \
-				       typeof(*pos), field);                   \
-		     1;                                                        \
-	     });                                                               \
+#define rbtree_postorder_for_each_entry_safe(pos, n, root, field) \
+	for (pos = rb_entry_safe(rb_first_postorder(root), typeof(*pos), field); \
+	     pos && ({ n = rb_entry_safe(rb_next_postorder(&pos->field), \
+			typeof(*pos), field); 1; }); \
 	     pos = n)
 
 #endif /* _LINUX_RBTREE_H */

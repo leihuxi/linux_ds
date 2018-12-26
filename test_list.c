@@ -21,7 +21,8 @@ static void append(struct a_list *ptr, const char *str, int val)
 	list_add_tail(&(tmp->list), &(ptr->list));
 }
 
-void test_list() {
+void test_list()
+{
 	struct a_list blist;
 	struct a_list *iter;
 

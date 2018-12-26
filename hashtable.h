@@ -11,23 +11,21 @@
 #include <unitypes.h>
 #include <math.h>
 
+#define DEFINE_HASHTABLE(name, bits)                                           \
+	struct hlist_head name[1 << (bits)] = { [0 ...((1 << (bits)) - 1)] =   \
+							HLIST_HEAD_INIT }
 
-#define DEFINE_HASHTABLE(name, bits)						\
-	struct hlist_head name[1 << (bits)] =					\
-			{ [0 ... ((1 << (bits)) - 1)] = HLIST_HEAD_INIT }
+#define DEFINE_READ_MOSTLY_HASHTABLE(name, bits)                               \
+	struct hlist_head name[1 << (bits)] __read_mostly = {                  \
+		[0 ...((1 << (bits)) - 1)] = HLIST_HEAD_INIT                   \
+	}
 
-#define DEFINE_READ_MOSTLY_HASHTABLE(name, bits)				\
-	struct hlist_head name[1 << (bits)] __read_mostly =			\
-			{ [0 ... ((1 << (bits)) - 1)] = HLIST_HEAD_INIT }
-
-#define DECLARE_HASHTABLE(name, bits)                                   	\
-	struct hlist_head name[1 << (bits)]
+#define DECLARE_HASHTABLE(name, bits) struct hlist_head name[1 << (bits)]
 
 #define HASH_SIZE(name) (ARRAY_SIZE(name))
 #define HASH_BITS(name) log2(HASH_SIZE(name))
 
-
-#define hash_min(val, bits)							\
+#define hash_min(val, bits)                                                    \
 	(sizeof(val) <= 4 ? hash_32(val, bits) : hash_64(val, bits))
 
 static inline void __hash_init(struct hlist_head *ht, unsigned int sz)
@@ -56,7 +54,7 @@ static inline void __hash_init(struct hlist_head *ht, unsigned int sz)
  * @node: the &struct hlist_node of the object to be added
  * @key: the key of the object to be added
  */
-#define hash_add(hashtable, node, key)						\
+#define hash_add(hashtable, node, key)                                         \
 	hlist_add_head(node, &hashtable[hash_min(key, HASH_BITS(hashtable))])
 
 /**
@@ -104,10 +102,10 @@ static inline void hash_del(struct hlist_node *node)
  * @obj: the type * to use as a loop cursor for each entry
  * @member: the name of the hlist_node within the struct
  */
-#define hash_for_each(name, bkt, obj, member)				\
-	for ((bkt) = 0, obj = NULL; obj == NULL && (bkt) < HASH_SIZE(name);\
-			(bkt)++)\
-		hlist_for_each_entry(obj, &name[bkt], member)
+#define hash_for_each(name, bkt, obj, member)                                  \
+	for ((bkt) = 0, obj = NULL; obj == NULL && (bkt) < HASH_SIZE(name);    \
+	     (bkt)++)                                                          \
+		hlist_for_each_entry (obj, &name[bkt], member)
 
 /**
  * hash_for_each_safe - iterate over a hashtable safe against removal of
@@ -118,10 +116,10 @@ static inline void hash_del(struct hlist_node *node)
  * @obj: the type * to use as a loop cursor for each entry
  * @member: the name of the hlist_node within the struct
  */
-#define hash_for_each_safe(name, bkt, tmp, obj, member)			\
-	for ((bkt) = 0, obj = NULL; obj == NULL && (bkt) < HASH_SIZE(name);\
-			(bkt)++)\
-		hlist_for_each_entry_safe(obj, tmp, &name[bkt], member)
+#define hash_for_each_safe(name, bkt, tmp, obj, member)                        \
+	for ((bkt) = 0, obj = NULL; obj == NULL && (bkt) < HASH_SIZE(name);    \
+	     (bkt)++)                                                          \
+		hlist_for_each_entry_safe (obj, tmp, &name[bkt], member)
 
 /**
  * hash_for_each_possible - iterate over all possible objects hashing to the
@@ -131,8 +129,9 @@ static inline void hash_del(struct hlist_node *node)
  * @member: the name of the hlist_node within the struct
  * @key: the key of the objects to iterate over
  */
-#define hash_for_each_possible(name, obj, member, key)			\
-	hlist_for_each_entry(obj, &name[hash_min(key, HASH_BITS(name))], member)
+#define hash_for_each_possible(name, obj, member, key)                         \
+	hlist_for_each_entry (obj, &name[hash_min(key, HASH_BITS(name))],      \
+			      member)
 
 /**
  * hash_for_each_possible_safe - iterate over all possible objects hashing to the
@@ -143,8 +142,8 @@ static inline void hash_del(struct hlist_node *node)
  * @member: the name of the hlist_node within the struct
  * @key: the key of the objects to iterate over
  */
-#define hash_for_each_possible_safe(name, obj, tmp, member, key)	\
-	hlist_for_each_entry_safe(obj, tmp,\
-		&name[hash_min(key, HASH_BITS(name))], member)
+#define hash_for_each_possible_safe(name, obj, tmp, member, key)               \
+	hlist_for_each_entry_safe (                                            \
+		obj, tmp, &name[hash_min(key, HASH_BITS(name))], member)
 
 #endif

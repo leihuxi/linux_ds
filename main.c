@@ -11,10 +11,10 @@ extern int test_kfifo();
 
 int main()
 {
-    test_list();
-    test_rbtree();
-    test_hashtable();
-    test_bitmap();
-    test_kfifo();
+	test_list();
+	test_rbtree();
+	test_hashtable();
+	test_bitmap();
+	test_kfifo();
 	return 0;
 }

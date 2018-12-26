@@ -12,15 +12,13 @@ typedef STRUCT_KFIFO_REC_1(FIFO_SIZE) mytest;
 static mytest test;
 
 static const char *expected_result[] = {
-	"a",      "bb",      "ccc",      "dddd", "eeeee",
-	"ffffff", "ggggggg", "hhhhhhhh", "iiiiiiiii",    "jjjjjjjjjj",
+	"a",      "bb",      "ccc",      "dddd",      "eeeee",
+	"ffffff", "ggggggg", "hhhhhhhh", "iiiiiiiii", "jjjjjjjjjj",
 };
-
 
 int test_kfifo()
 {
-
-    INIT_KFIFO(test);
+	INIT_KFIFO(test);
 	char buf[100];
 	unsigned int i;
 	unsigned int ret;
